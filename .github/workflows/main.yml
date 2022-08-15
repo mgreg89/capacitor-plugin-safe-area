@@ -25,7 +25,7 @@ jobs:
           ref: master
 
       - name: npm install
-        run: npm install
+        run: npm ci
         
       - name: Packaging
         run: npm run build
