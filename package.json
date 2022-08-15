@@ -1,5 +1,5 @@
 {
-  "name": "@capacitor-community/safe-area",
+  "name": "capacitor-plugin-android-safe-area",
   "version": "0.0.1",
   "description": "A plugin to expose the safe area insets from the native iOS/Android device to your web project.",
   "main": "dist/plugin.js",

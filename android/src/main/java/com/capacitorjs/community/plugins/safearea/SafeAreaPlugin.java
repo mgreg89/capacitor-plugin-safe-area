@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
-import android.view.DisplayCutout;
 import android.view.WindowInsets;
 
 import com.getcapacitor.JSObject;
@@ -72,23 +71,13 @@ public class SafeAreaPlugin extends Plugin implements SensorEventListener {
 			return -1;
 		}
 
-		DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-
-		if(displayCutout == null) {
-			Log.i(SafeAreaPlugin.class.toString(), "DisplayCutout is not available.");
-
-			cache.clear();
-
-			return -1;
-		}
-
 		float density = this.getBridge().getActivity().getResources().getDisplayMetrics().density;
 		boolean hasChanged = false;
 
-		int top = Math.round(displayCutout.getSafeInsetTop() / density);
-		int bottom = Math.round(displayCutout.getSafeInsetBottom() / density);
-		int left = Math.round(displayCutout.getSafeInsetLeft() / density);
-		int right = Math.round(displayCutout.getSafeInsetRight() / density);
+		int top = Math.round(windowInsets.getSystemWindowInsetTop() / density);
+		int bottom = Math.round(windowInsets.getSystemWindowInsetBottom() / density);
+		int left = Math.round(windowInsets.getSystemWindowInsetLeft() / density);
+		int right = Math.round(windowInsets.getSystemWindowInsetRight() / density);
 
 		if(cache.top() != top) {
 			cache.top(top);
