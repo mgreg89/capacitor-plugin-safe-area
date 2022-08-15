@@ -19,10 +19,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout repository from branch latestRelease
+      - name: Checkout repository from branch master
         uses: actions/checkout@v2
         with:
-          ref: latestRelease
+          ref: master
 
       - name: npm install
         run: npm install
