@@ -1,0 +1,49 @@
+name: Create Package branch for npm install from this GitHub repo 
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    branches: [ master ]
+    
+jobs:
+  # This workflow contains a single job called "build"
+  packaging:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:      
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository from branch latestRelease
+        uses: actions/checkout@v2
+        with:
+          ref: latestRelease
+
+      - name: npm install
+        run: npm install
+        
+      - name: Packaging
+        run: npm run build
+
+      - name: Print build directory
+        run: ls -al ./dist
+        
+      - name: git add
+        run: git add -A
+      
+      - name: Git Auto Commit
+        # You may pin to the exact commit or the version.
+        # uses: stefanzweifel/git-auto-commit-action@75802d269e7721b5146d08f6063ba3097c55ad2b
+        uses: stefanzweifel/git-auto-commit-action@v4.8.0
+        with:
+          # Commit message
+          commit_message: UPDATED package
+          # Git branch name, where changes should be pushed too. Required if Action is used on the `pull_request` event
+          branch: package
+          # Commit options (eg. --no-verify)
+          commit_options: --all
