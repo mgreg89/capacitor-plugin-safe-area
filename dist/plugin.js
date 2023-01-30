@@ -1,15 +1,6 @@
 var capacitorPlugin = (function (exports, core) {
     'use strict';
 
-    var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    };
     class SafeAreaController {
         constructor() {
             this.insets = {
@@ -22,8 +13,7 @@ var capacitorPlugin = (function (exports, core) {
             this.listeners = [];
         }
         load() {
-            var _a;
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.remove();
+            this.callback?.remove();
             this.callback = core.Plugins.SafeAreaPlugin.addListener("safeAreaPluginsInsetChange", (insets) => {
                 this.updateInsets(insets);
                 this.injectCSSVariables();
@@ -60,20 +50,17 @@ var capacitorPlugin = (function (exports, core) {
                 }
             }
         }
-        refresh() {
-            return __awaiter(this, void 0, void 0, function* () {
-                const { insets } = yield core.Plugins.SafeAreaPlugin.getSafeAreaInsets();
-                this.updateInsets(insets);
-                this.injectCSSVariables();
-                this.notifyListeners();
-            });
+        async refresh() {
+            const { insets } = await core.Plugins.SafeAreaPlugin.getSafeAreaInsets();
+            this.updateInsets(insets);
+            this.injectCSSVariables();
+            this.notifyListeners();
         }
         getInsets() {
             return this.insets;
         }
         unload() {
-            var _a;
-            (_a = this.callback) === null || _a === void 0 ? void 0 : _a.remove();
+            this.callback?.remove();
         }
         notifyListeners() {
             this.listeners.forEach((listener) => listener(this.insets));
@@ -85,15 +72,6 @@ var capacitorPlugin = (function (exports, core) {
 
     const SafeAreaInsetsChangeEventName = "safeAreaPluginsInsetChange";
 
-    var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    };
     class SafeAreaPluginWeb extends core.WebPlugin {
         constructor() {
             super({
@@ -104,17 +82,15 @@ var capacitorPlugin = (function (exports, core) {
         /**
          * Call this whenever you want the EventOnInsetsChanged to be fired manually.
          */
-        refresh() {
-            return __awaiter$1(this, void 0, void 0, function* () {
-                const dummy = {
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    left: 0
-                };
-                this.notifyListeners(SafeAreaInsetsChangeEventName, {
-                    insets: dummy
-                });
+        async refresh() {
+            const dummy = {
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0
+            };
+            this.notifyListeners(SafeAreaInsetsChangeEventName, {
+                insets: dummy
             });
         }
         /**
@@ -132,8 +108,16 @@ var capacitorPlugin = (function (exports, core) {
             });
         }
     }
-    const SafeAreaPlugin = new SafeAreaPluginWeb();
-    core.registerWebPlugin(SafeAreaPlugin);
+    const SafeAreaPlugin = core.registerPlugin('SafeAreaPlugin', {
+        web: () => Promise.resolve().then(function () { return web; }).then(m => new m.SafeAreaPluginWeb()),
+    });
+
+    var web = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        SafeAreaPluginWeb: SafeAreaPluginWeb,
+        SafeAreaPlugin: SafeAreaPlugin,
+        SafeAreaInsetsChangeEventName: SafeAreaInsetsChangeEventName
+    });
 
     const controller = new SafeAreaController();
 

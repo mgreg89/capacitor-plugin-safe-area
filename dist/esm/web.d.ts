@@ -12,4 +12,5 @@ export declare class SafeAreaPluginWeb extends WebPlugin implements SafeArea {
     getSafeAreaInsets(): Promise<SafeAreaInsetsResult>;
 }
 declare const SafeAreaPlugin: SafeAreaPluginWeb;
+export * from './definitions';
 export { SafeAreaPlugin };

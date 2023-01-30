@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { Capacitor, Plugins } from '@capacitor/core';
 class SafeAreaController {
     constructor() {
@@ -20,8 +11,7 @@ class SafeAreaController {
         this.listeners = [];
     }
     load() {
-        var _a;
-        (_a = this.callback) === null || _a === void 0 ? void 0 : _a.remove();
+        this.callback?.remove();
         this.callback = Plugins.SafeAreaPlugin.addListener("safeAreaPluginsInsetChange", (insets) => {
             this.updateInsets(insets);
             this.injectCSSVariables();
@@ -58,20 +48,17 @@ class SafeAreaController {
             }
         }
     }
-    refresh() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { insets } = yield Plugins.SafeAreaPlugin.getSafeAreaInsets();
-            this.updateInsets(insets);
-            this.injectCSSVariables();
-            this.notifyListeners();
-        });
+    async refresh() {
+        const { insets } = await Plugins.SafeAreaPlugin.getSafeAreaInsets();
+        this.updateInsets(insets);
+        this.injectCSSVariables();
+        this.notifyListeners();
     }
     getInsets() {
         return this.insets;
     }
     unload() {
-        var _a;
-        (_a = this.callback) === null || _a === void 0 ? void 0 : _a.remove();
+        this.callback?.remove();
     }
     notifyListeners() {
         this.listeners.forEach((listener) => listener(this.insets));
