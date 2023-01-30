@@ -1,5 +1,5 @@
-import { WebPlugin } from '@capacitor/core';
-import { SafeAreaInsets, SafeArea, SafeAreaInsetsChangeEventName, SafeAreaInsetsResult } from './definitions';
+import { WebPlugin, registerPlugin } from '@capacitor/core';
+import { SafeAreaInsets, SafeArea, SafeAreaInsetsChangeEventName, SafeAreaInsetsResult, SafeAreaInsetsChangedCallback } from './definitions';
 
 export class SafeAreaPluginWeb extends WebPlugin implements SafeArea {
 	constructor() {
@@ -42,9 +42,10 @@ export class SafeAreaPluginWeb extends WebPlugin implements SafeArea {
 	}
 }
 
-const SafeAreaPlugin = new SafeAreaPluginWeb();
 
+const SafeAreaPlugin = registerPlugin<SafeAreaPluginWeb>('SafeAreaPlugin', {
+  web: () => import('./web').then(m => new m.SafeAreaPluginWeb()),
+});
+
+export * from './definitions';
 export { SafeAreaPlugin };
-
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(SafeAreaPlugin);
